@@ -47,11 +47,16 @@ repo dùng chung `/workspace` nên không phải sửa gì.
 4. **Kết nối**: tab *Connect* → copy lệnh *SSH over exposed TCP* (dạng `ssh root@<IP> -p <PORT> -i ~/.ssh/id_ed25519`).
 5. **Cài lần đầu** (trong pod):
    ```bash
-   cd /workspace && git clone https://github.com/<tài-khoản>/<repo>.git furniture-ai
-   bash furniture-ai/infra/runpod/bootstrap.sh
+   cd /workspace && git clone https://github.com/Tan-Phat-20KDL/AI_Agent.git furniture-ai
+   cd furniture-ai && git checkout develop   # demo cho khách: git checkout staging
+   bash infra/runpod/bootstrap.sh
    # điền URL + sha256 vào infra/models.lock rồi:
    bash furniture-ai/infra/download_models.sh
    ```
+   Repo là private: khi `git clone` hỏi *Username* thì nhập tên GitHub, *Password* thì dán một
+   **fine-grained token** tạo tại https://github.com/settings/personal-access-tokens/new
+   (Repository access: chỉ `AI_Agent`; Permissions → Contents: **Read-only**; đặt hạn dùng ngắn).
+   Không dùng mật khẩu GitHub thật, không commit token vào repo.
    Phụ thuộc của ComfyUI-Trellis2 (wheel CuMesh cho Linux) cài tay theo README của node đó lần đầu,
    rồi ghi lệnh lại vào `bootstrap.sh`.
 6. **Mỗi lần làm việc**:

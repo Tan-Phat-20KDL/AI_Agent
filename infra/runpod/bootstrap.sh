@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Cài môi trường trên RunPod Pod (L40S, template "Runpod PyTorch"). Chạy lại nhiều lần không sao.
 #
-#   cd /workspace && git clone <repo của bạn> furniture-ai
+#   cd /workspace && git clone https://github.com/Tan-Phat-20KDL/AI_Agent.git furniture-ai
 #   bash /workspace/furniture-ai/infra/runpod/bootstrap.sh
 #
 # Mọi thứ nằm trong /workspace (volume disk) để còn sau khi Stop pod.

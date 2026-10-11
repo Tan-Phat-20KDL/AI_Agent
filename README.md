@@ -61,17 +61,17 @@ tests/           pytest
 docs/            SRS, SPEC, hướng dẫn RunPod/AWS
 ```
 
-## Đưa lên GitHub
+## Nhánh git
 
-Tạo repo **trống** trên GitHub (không tick README/.gitignore), rồi chạy trong thư mục này:
+Repo: https://github.com/Tan-Phat-20KDL/AI_Agent (private)
 
-```powershell
-git init -b main
-git add .
-git commit -m "Core furniture-ai: CSV, scene graph, đặt đồ, báo giá, viewer, infra RunPod"
-git remote add origin https://github.com/<tài-khoản>/<tên-repo>.git
-git push -u origin main
-```
+| Nhánh | Dùng cho |
+| --- | --- |
+| `develop` | Code hằng ngày |
+| `staging` | Bản chốt để test trên GPU và demo — gộp từ `develop` qua Pull Request |
+| `main` | Bản ổn định / production — gộp từ `staging` qua Pull Request |
+
+Không commit thẳng vào `main`/`staging`.
 
 `.gitignore` đã loại `.venv/`, `runtime/`, `assets/`, model và ảnh phòng khách; `.gitattributes`
 giữ xuống dòng LF cho file `.sh` để chạy được trên Linux.

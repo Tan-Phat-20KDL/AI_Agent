@@ -1,0 +1,7 @@
+variant_id,sku,color_name,material_id,price_vnd,image_paths,asset_glb,asset_status,tint_hex
+TB01-BLK,TB01,Đen nhám,MDF_BLACK,6900000,img/TB01-BLK-1.jpg,assets/TB01/BLK.glb,approved,
+TB01-WAL,TB01,Óc chó,WAL_OIL,8200000,img/TB01-WAL-1.jpg,,pending,
+CH01-BRN,CH01,Nâu óc chó,WAL_OIL,1850000,img/CH01-BRN-1.jpg;img/CH01-BRN-2.jpg,assets/CH01/BRN.glb,approved,
+CH01-GRN,CH01,Xanh rêu,OAK_STAIN,1850000,,assets/CH01/BRN.glb,approved,#4A5D4F
+SF01-GRY,SF01,Xám tro,FABRIC_GREY,12500000,img/SF01-GRY-1.jpg,assets/SF01/GRY.glb,approved,
+TV01-WHT,TV01,Trắng,MDF_WHITE,4300000,img/TV01-WHT-1.jpg,,rejected,

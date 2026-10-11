@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Furniture AI Viewer</title>
+  <style>
+    :root { --bg: #f4f2ee; --panel: #ffffffee; --ink: #1d1d1f; --muted: #6b6b70; --accent: #2f6fdf; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #141416; --panel: #1f1f22ee; --ink: #f2f2f4; --muted: #a0a0a8; } }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, sans-serif; }
+    #app { position: fixed; inset: 0; }
+    .panel { position: fixed; background: var(--panel); border-radius: 10px; padding: 12px 14px;
+             box-shadow: 0 2px 12px #0002; max-width: min(360px, calc(100vw - 32px)); }
+    #info { left: 16px; top: 16px; }
+    #pick { right: 16px; top: 16px; display: none; }
+    #bar { left: 16px; bottom: 16px; display: flex; gap: 8px; }
+    h1 { font-size: 15px; margin: 0 0 4px; }
+    .muted { color: var(--muted); font-size: 12px; }
+    button { font: inherit; padding: 6px 10px; border-radius: 8px; border: 1px solid #8884; background: transparent;
+             color: var(--ink); cursor: pointer; }
+    button:hover { border-color: var(--accent); }
+    .err { color: #d33; }
+  </style>
+  <script type="importmap">
+    { "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    } }
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="info" class="panel"><h1>Đang tải…</h1><div class="muted" id="sub"></div></div>
+  <div id="pick" class="panel"></div>
+  <div id="bar" class="panel">
+    <button id="shot" title="FR-14: ảnh 2D chụp từ cảnh 3D">Chụp ảnh PNG</button>
+    <button id="reset">Góc nhìn ban đầu</button>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# /etc/systemd/system/comfyui.service — bản AWS (production công ty)
+[Unit]
+Description=ComfyUI
+After=network-online.target
+
+[Service]
+User=ubuntu
+Environment=FA_ROOT=/opt/furniture-ai/furniture-ai
+WorkingDirectory=/opt/furniture-ai/ComfyUI
+ExecStart=/opt/furniture-ai/venv/bin/python main.py --listen 127.0.0.1 --port 8188
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

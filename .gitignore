@@ -1,0 +1,29 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+
+# Dữ liệu sinh ra khi chạy (không đưa lên git)
+runtime/
+scenes/
+quotes/
+logs/
+assets/
+*.glb
+!tests/fixtures/*.glb
+
+# Model AI (hàng chục GB)
+models/
+*.safetensors
+*.ckpt
+*.pth
+
+# Bí mật
+.env
+*.pem
+id_ed25519*
+
+# Ảnh phòng của khách (dữ liệu cá nhân)
+data/rooms/

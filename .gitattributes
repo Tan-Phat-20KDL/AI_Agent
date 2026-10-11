@@ -1,0 +1,6 @@
+# Script chạy trên Linux phải giữ xuống dòng LF (Windows git mặc định đổi sang CRLF → bash lỗi)
+*.sh text eol=lf
+*.service text eol=lf
+*.lock text eol=lf
+*.py text eol=lf
+*.glb binary

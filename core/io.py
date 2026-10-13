@@ -40,3 +40,19 @@ def write_json_atomic(path: str | os.PathLike, obj: Any) -> Path:
 def read_json(path: str | os.PathLike) -> Any:
     with open(path, "r", encoding="utf-8") as fh:
         return json.load(fh)
+
+
+def export_glb(scene) -> bytes:
+    """Xuất GLB kèm pháp tuyến (thiếu NORMAL → viewer tính ánh sáng sai, mặt bị đen).
+
+    Không có scipy, trimesh tự dùng cách tính dự phòng và in cảnh báo dài — tắt cảnh báo đó.
+    """
+    import logging
+
+    log = logging.getLogger("trimesh")
+    old = log.level
+    log.setLevel(logging.ERROR)
+    try:
+        return scene.export(file_type="glb", include_normals=True)
+    finally:
+        log.setLevel(old)

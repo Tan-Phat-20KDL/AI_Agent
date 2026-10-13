@@ -21,8 +21,8 @@ if ! pgrep -f "ComfyUI/main.py" >/dev/null; then
   nohup python "$COMFY_DIR/main.py" --listen 127.0.0.1 --port 8188 >"$LOG_DIR/comfyui.log" 2>&1 &
   echo "ComfyUI đang khởi động → tail -f $LOG_DIR/comfyui.log"
 fi
-if ! pgrep -f "http.server 8765" >/dev/null; then
-  (cd "$REPO_DIR" && nohup python -m http.server 8765 --bind 127.0.0.1 >"$LOG_DIR/viewer.log" 2>&1 &)
+if ! pgrep -f "tools/serve.py" >/dev/null; then
+  (cd "$REPO_DIR" && nohup python tools/serve.py 8765 >"$LOG_DIR/viewer.log" 2>&1 &)
 fi
 if ! pgrep -f "idle_stop.sh" >/dev/null; then
   nohup bash "$REPO_DIR/infra/runpod/idle_stop.sh" >>"$LOG_DIR/idle_stop.log" 2>&1 &

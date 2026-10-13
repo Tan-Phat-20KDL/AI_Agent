@@ -24,7 +24,7 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python -m pip install numpy trimesh pytest
 .\.venv\Scripts\python -m pytest -q
 .\.venv\Scripts\python tools\demo_local.py
-.\.venv\Scripts\python -m http.server 8765
+.\.venv\Scripts\python tools/serve.py
 # mở http://localhost:8765/viewer/?scene=runtime/out/demo/scene.glb
 ```
 

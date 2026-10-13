@@ -4,7 +4,7 @@ Bàn/ghế ở đây là khối tạm đúng kích thước; trên GPU sẽ thay
 Ảnh gỗ là vân giả sinh bằng numpy; thay bằng ảnh thanh gỗ/gạch thật của bạn.
 
     python tools/demo_local.py
-    python -m http.server 8765      # mở http://localhost:8765/viewer/?scene=runtime/out/demo/scene.glb
+    python tools/serve.py      # mở http://localhost:8765/viewer/?scene=runtime/out/demo/scene.glb
 """
 
 from __future__ import annotations
@@ -69,7 +69,9 @@ def placeholder(kind: str) -> trimesh.Trimesh:
         c = [120, 80, 50, 255]
         parts = [_box([0.45, 0.04, 0.45], [0, 0.45, 0.035], c), _box([0.45, 0.4, 0.04], [0, 0.66, -0.2], c)]
         parts += [_box([0.035, 0.43, 0.035], [x, 0.215, z], c) for x in (-0.2, 0.2) for z in (-0.2, 0.24)]
-    return trimesh.util.concatenate(parts)
+    mesh = trimesh.util.concatenate(parts)
+    mesh.unmerge_vertices()  # mỗi mặt đỉnh riêng → cạnh hộp sắc nét, không bị làm mượt
+    return mesh
 
 
 def main() -> None:
@@ -89,7 +91,7 @@ def main() -> None:
     for node, info in meta["nodes"].items():
         print(f"   {node:8} vị trí {info['position_mm']} mm, quay {info['rotation_deg']}°")
 
-    print("\nXem 3D:  python -m http.server 8765")
+    print("\nXem 3D:  python tools/serve.py")
     print("         http://localhost:8765/viewer/?scene=runtime/out/demo/scene.glb")
 
 

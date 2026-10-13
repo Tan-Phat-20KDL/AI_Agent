@@ -65,6 +65,7 @@ async function applySurface(root, name, surf) {
     uv.push(v[a], v[b]);
   }
   mesh.geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  if (!mesh.geometry.attributes.normal) mesh.geometry.computeVertexNormals();
   const tex = await new THREE.TextureLoader().loadAsync(fromRoot(surf.texture));
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
@@ -86,6 +87,11 @@ async function load() {
   gltf.scene.traverse((o) => {
     if (!o.isMesh) return;
     o.material = o.material.clone();   // mesh dùng chung giữa các ghế → tách vật liệu để highlight riêng
+    // GLB thiếu pháp tuyến / vật liệu (glTF mặc định metallic = 1 → gần như đen) → bù cho đúng
+    if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
+    if (o.material.metalness === 1 && !o.material.metalnessMap) { o.material.metalness = 0; o.material.roughness = 0.85; }
+    o.material.flatShading = false;
+    o.material.needsUpdate = true;
     const isRoom = o.name.startsWith('room_');
     o.castShadow = !isRoom;
     o.receiveShadow = true;
@@ -140,5 +146,5 @@ addEventListener('resize', () => {
 renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
 load().catch((err) => {
   el('info').innerHTML = `<h1 class="err">Không tải được cảnh</h1><div class="muted">${sceneUrl}<br>${err}</div>
-    <div class="muted">Chạy <code>python tools/demo_local.py</code> rồi <code>python -m http.server 8765</code> ở gốc repo.</div>`;
+    <div class="muted">Chạy <code>python tools/demo_local.py</code> rồi <code>python tools/serve.py</code> ở gốc repo.</div>`;
 });

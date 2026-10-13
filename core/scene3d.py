@@ -25,7 +25,7 @@ from pathlib import Path
 import numpy as np
 
 from core._util import snap_rotation
-from core.io import write_bytes_atomic, write_json_atomic
+from core.io import export_glb, write_bytes_atomic, write_json_atomic
 from core.placement import find_collisions, place_missing
 from core.room import build_room_mesh
 
@@ -131,7 +131,7 @@ def build_scene(spec: dict, root: str | Path, out_glb: str | Path) -> dict:
             nodes[node] = {"object_id": obj["id"], "position_mm": [x, z], "rotation_deg": inst.get("rotation_deg", 0)}
 
     out_glb = Path(out_glb)
-    write_bytes_atomic(out_glb, out.export(file_type="glb"))
+    write_bytes_atomic(out_glb, export_glb(out))
     meta = {"scene_id": placed.get("scene_id", out_glb.stem), "room": r,
             "surfaces": placed.get("surfaces", {}), "nodes": nodes, "objects": placed["objects"]}
     write_json_atomic(out_glb.with_suffix(".meta.json"), meta)

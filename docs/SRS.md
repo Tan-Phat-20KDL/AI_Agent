@@ -19,7 +19,8 @@ web app khách hàng, dựng phòng từ video.
 
 - C-1 Chỉ model cho phép thương mại: Qwen-Image-Edit-2511 (Apache-2.0), SAM 3 (SAM License), TRELLIS.2 (MIT),
   BiRefNet (MIT), MoGe-2 (MIT). Nguồn và license: [SPEC.md](SPEC.md).
-- C-2 Chạy trên RunPod RTX A6000 48 GB (Community), ComfyUI làm giao diện.
+- C-2 Phần cứng theo bậc, rẻ trước: **0a Colab T4 miễn phí** (notebook `notebooks/colab_phase0_t4.ipynb`) →
+  **0b RunPod card 24 GB** cho Qwen-Image-Edit + TRELLIS bản 1 (≥ 16 GB) → chỉ lên A6000 48 GB nếu cần TRELLIS.2 (≥ 24 GB, sát giới hạn 24 GB).
 
 ## 3. Yêu cầu chức năng
 
@@ -45,7 +46,8 @@ web app khách hàng, dựng phòng từ video.
 
 ## 5. Phase 0 (việc tiếp theo, trên pod)
 
-1. Cài ComfyUI + Qwen-Image-Edit-2511 FP8 + SAM 3 + TRELLIS.2 + BiRefNet.
+0. **Colab T4 (miễn phí):** chạy notebook — test code, MoGe-2 đo phòng từ ảnh thật, dựng cảnh 3D. Ghi VRAM đỉnh.
+1. **RunPod 24 GB:** cài ComfyUI + Qwen-Image-Edit-2511 FP8 + SAM 3 + BiRefNet + TRELLIS (bản 1; bản 2 nếu đủ VRAM).
 2. Thử FR-1 và FR-2 với **ảnh thật của bạn** (5–10 bộ). Đây là rủi ro lớn nhất: chưa biết model ghép đúng 4 ghế
    và giữ đúng mẫu không. Không đạt → cân nhắc ghép từ cảnh 3D (render 3D rồi làm thật bằng Qwen-Image-Edit).
 3. Thử FR-3 (TRELLIS.2) với ảnh bàn/ghế thật.

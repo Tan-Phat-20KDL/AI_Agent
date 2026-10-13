@@ -48,6 +48,19 @@ def fit_plane_ransac(points: np.ndarray, threshold: float = 0.02, iterations: in
     return n, d, mask
 
 
+def floor_mask_from_normals(normals: np.ndarray, valid: np.ndarray | None = None,
+                            max_tilt_deg: float = 30.0) -> np.ndarray:
+    """Mask sàn thô từ normal map của MoGe-2 (toạ độ OpenCV: y hướng xuống → "lên" là -y).
+
+    Lấy điểm có mặt ngửa lên (lệch ≤ max_tilt_deg) — gồm cả mặt bàn; RANSAC trong estimate_room
+    giữ mặt phẳng lớn nhất (thường là sàn). Dùng khi chưa có SAM 3; có SAM 3 thì dùng mask "floor".
+    """
+    n = np.asarray(normals, dtype=np.float64)
+    up = -n[..., 1] / np.maximum(np.linalg.norm(n, axis=-1), 1e-9)
+    mask = up >= np.cos(np.radians(max_tilt_deg))
+    return mask & np.asarray(valid, dtype=bool) if valid is not None else mask
+
+
 @dataclass(frozen=True)
 class RoomEstimate:
     width_mm: int

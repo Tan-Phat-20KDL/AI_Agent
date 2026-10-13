@@ -92,3 +92,15 @@ def test_estimate_room_from_synthetic_point_map():
     assert abs(est.width_mm - 4000) / 4000 < 0.06 and abs(est.depth_mm - 3000) / 3000 < 0.06
     fixed = estimate_room(p * 0.8, mask, calibration=(estimate_room(p * 0.8, mask).camera_height_mm, 1400))
     assert abs(fixed.camera_height_mm - 1400) <= 2
+
+
+def test_floor_mask_from_normals():
+    from core.room import floor_mask_from_normals
+
+    n = np.zeros((2, 3, 3))
+    n[0] = [0, -1, 0]                 # ngửa lên (OpenCV: lên = -y) → sàn
+    n[1] = [0, 0, -1]                 # tường nhìn về camera → không phải sàn
+    n[0, 2] = [0, 0.96, 0.28]         # trần (úp xuống) → không phải sàn
+    valid = np.ones((2, 3), bool)
+    valid[0, 1] = False
+    assert floor_mask_from_normals(n, valid).tolist() == [[True, False, False], [False, False, False]]

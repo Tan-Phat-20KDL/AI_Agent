@@ -1,6 +1,10 @@
 # Demo trên RunPod (Community Cloud)
 
-**Chốt 11/10/2026: dùng RTX A6000 48 GB** (thay L40S) cho giai đoạn cài đặt + Phase 0.
+**Cập nhật 13/10/2026 (phạm vi đã thu hẹp):** thử trước trên **Colab T4 miễn phí** (`notebooks/colab_phase0_t4.ipynb`),
+rồi mới thuê RunPod **card 24 GB** (RTX 3090/4090/A5000 — xem giá trong console, 4090 theo trang giá: 0,34–0,89 USD/h)
+cho Qwen-Image-Edit + TRELLIS bản 1. A6000 48 GB chỉ dùng khi cần TRELLIS.2 hoặc 24 GB bị tràn.
+
+Chốt trước đó (11/10/2026): RTX A6000 48 GB
 Lý do: rẻ hơn L40S 25–60% (0,33–0,59 USD/h theo dữ liệu trang giá), cùng 48 GB VRAM nên TRELLIS.2 (≥ 24 GB)
 không lo tràn; đổi lại chậm hơn (Ampere, không tính FP8 trực tiếp) và RAM máy 50 GB — đủ cho bộ model rút gọn.
 1–3 h/ngày ≈ 10–53 USD/tháng tiền GPU + ≤ 18 USD lưu trữ. Chuyển L40S/A100 chỉ khi Phase 0 đo thấy cần.
@@ -71,9 +75,9 @@ repo dùng chung `/workspace` nên không phải sửa gì.
    ```
    ```powershell
    # trên Windows, giữ cửa sổ mở
-   ssh -N -L 8188:127.0.0.1:8188 -L 8080:127.0.0.1:8080 root@<IP> -p <PORT> -i $HOME\.ssh\id_ed25519
+   ssh -N -L 8188:127.0.0.1:8188 -L 8765:127.0.0.1:8765 root@<IP> -p <PORT> -i $HOME\.ssh\id_ed25519
    ```
-   Mở `http://localhost:8188` (ComfyUI) và `http://localhost:8080/viewer/?scene=runtime/out/<scene>/v<N>/scene.glb`.
+   Mở `http://localhost:8188` (ComfyUI) và `http://localhost:8765/viewer/?scene=runtime/out/<scene>/v<N>/scene.glb`.
    Port forwarding `-L` là tính năng chuẩn của OpenSSH; docs RunPod không nói rõ — thử ở lần đầu.
 7. **Tắt**: Stop pod trên console (không Terminate). `idle_stop.sh` tự gọi `runpodctl pod stop $RUNPOD_POD_ID`
    sau 30 phút GPU rảnh — **chưa xác minh** `runpodctl` có sẵn và đã xác thực bên trong pod; kiểm tra

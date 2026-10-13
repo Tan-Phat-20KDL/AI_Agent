@@ -4,7 +4,7 @@ Bàn/ghế ở đây là khối tạm đúng kích thước; trên GPU sẽ thay
 Ảnh gỗ là vân giả sinh bằng numpy; thay bằng ảnh thanh gỗ/gạch thật của bạn.
 
     python tools/demo_local.py
-    python -m http.server 8080      # mở http://localhost:8080/viewer/?scene=runtime/out/demo/scene.glb
+    python -m http.server 8765      # mở http://localhost:8765/viewer/?scene=runtime/out/demo/scene.glb
 """
 
 from __future__ import annotations
@@ -89,8 +89,8 @@ def main() -> None:
     for node, info in meta["nodes"].items():
         print(f"   {node:8} vị trí {info['position_mm']} mm, quay {info['rotation_deg']}°")
 
-    print("\nXem 3D:  python -m http.server 8080")
-    print("         http://localhost:8080/viewer/?scene=runtime/out/demo/scene.glb")
+    print("\nXem 3D:  python -m http.server 8765")
+    print("         http://localhost:8765/viewer/?scene=runtime/out/demo/scene.glb")
 
 
 if __name__ == "__main__":

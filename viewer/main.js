@@ -140,5 +140,5 @@ addEventListener('resize', () => {
 renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
 load().catch((err) => {
   el('info').innerHTML = `<h1 class="err">Không tải được cảnh</h1><div class="muted">${sceneUrl}<br>${err}</div>
-    <div class="muted">Chạy <code>python tools/demo_local.py</code> rồi <code>python -m http.server 8080</code> ở gốc repo.</div>`;
+    <div class="muted">Chạy <code>python tools/demo_local.py</code> rồi <code>python -m http.server 8765</code> ở gốc repo.</div>`;
 });

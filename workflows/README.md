@@ -31,7 +31,7 @@ Nếu phòng bị đổi: thêm bước B3 (ghép theo mask) để giữ nguyên
 1. Ảnh bàn → BiRefNet tách nền → TRELLIS.2 → GLB → `FA · Chuẩn hoá 3D` (nhập kích thước thật mm).
 2. Lặp lại cho ghế.
 3. `FA · Dựng cảnh 3D`: kích thước phòng, 2 GLB, số ghế, (ảnh gỗ + kích thước 1 thanh, mặt cần lát).
-4. Xem: `http://localhost:8080/viewer/?scene=runtime/out/<scene_id>/scene.glb` (qua SSH tunnel).
+4. Xem: `http://localhost:8765/viewer/?scene=runtime/out/<scene_id>/scene.glb` (qua SSH tunnel).
 
 Kích thước phòng: nhập tay, hoặc ước lượng từ ảnh bằng MoGe-2 + `core.room.estimate_room` (đã có code, chưa nối node).
 

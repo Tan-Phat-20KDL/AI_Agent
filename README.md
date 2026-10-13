@@ -2,7 +2,7 @@
 
 Đầu vào **1–3 ảnh**: ảnh phòng + ảnh bàn + ảnh ghế (hoặc ảnh gạch/thanh gỗ).
 Đầu ra: **ảnh 2D** căn phòng đã ghép 1 bàn + 4 ghế / đã lát vật liệu, và **cảnh 3D** xem bằng three.js.
-ComfyUI là giao diện vận hành; model chạy trên RunPod RTX A6000.
+ComfyUI là giao diện vận hành. Thử trước trên Colab T4 miễn phí ([notebook](notebooks/colab_phase0_t4.ipynb)), sau đó RunPod card 24 GB.
 
 Tài liệu: [SRS](docs/SRS.md) · [SPEC (nghiên cứu model, license, giá)](docs/SPEC.md) ·
 [Cài trên RunPod](docs/runpod-setup.md) · [Workflow](workflows/README.md) · [Quy ước code](CONTRIBUTING.md)
@@ -24,8 +24,8 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python -m pip install numpy trimesh pytest
 .\.venv\Scripts\python -m pytest -q
 .\.venv\Scripts\python tools\demo_local.py
-.\.venv\Scripts\python -m http.server 8080
-# mở http://localhost:8080/viewer/?scene=runtime/out/demo/scene.glb
+.\.venv\Scripts\python -m http.server 8765
+# mở http://localhost:8765/viewer/?scene=runtime/out/demo/scene.glb
 ```
 
 ## Cấu trúc
@@ -41,6 +41,7 @@ comfy_nodes/     node ComfyUI: Chuẩn hoá 3D, Dựng cảnh 3D
 viewer/          three.js
 workflows/       hướng dẫn workflow A/B/C trong ComfyUI
 infra/, bench/   cài đặt pod, benchmark Phase 0
+notebooks/       Colab T4: test miễn phí trước khi thuê GPU
 tools/           demo_local.py
 ```
 

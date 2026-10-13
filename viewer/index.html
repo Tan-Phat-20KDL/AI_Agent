@@ -21,11 +21,25 @@
     button:hover { border-color: var(--accent); }
     .err { color: #d33; }
   </style>
+  <!-- three.js 0.160.0 lưu sẵn trong viewer/vendor (MIT) → không phụ thuộc CDN/mạng -->
   <script type="importmap">
     { "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        "three": "./vendor/three/three.module.min.js",
+        "three/addons/": "./vendor/three/addons/"
     } }
+  </script>
+  <script>
+    // Lỗi tải module (vd thiếu file) không vào được try/catch trong main.js → bắt ở đây để không treo "Đang tải…"
+    const showErr = (msg) => {
+      const box = document.getElementById('info');
+      if (box) box.innerHTML = '<h1 class="err">Lỗi viewer</h1><div class="muted">' + msg + '<br>F12 → Console để xem chi tiết.</div>';
+    };
+    addEventListener('error', (e) => showErr(e.message || ('không tải được ' + (e.target && (e.target.src || e.target.href)))), true);
+    addEventListener('unhandledrejection', (e) => showErr(String(e.reason)));
+    setTimeout(() => {
+      const h = document.querySelector('#info h1');
+      if (h && h.textContent === 'Đang tải…') showErr('Quá 20 giây vẫn chưa tải xong cảnh.');
+    }, 20000);
   </script>
 </head>
 <body>

@@ -17,6 +17,19 @@ Tài liệu: [SRS](docs/SRS.md) · [SPEC (nghiên cứu model, license, giá)](d
 | Ước lượng kích thước phòng từ point map MoGe-2 | ✔ phần hình học; nối model ở Phase 0 |
 | Script cài/tự dừng pod, benchmark | Viết sẵn, chạy thử ở Phase 0 |
 
+## Giao diện Gradio (chính)
+
+```powershell
+.\.venv\Scripts\python -m pip install -r requirements-app.txt
+.\.venv\Scripts\python app\gradio_app.py          # http://127.0.0.1:7860
+.\.venv\Scripts\python app\gradio_app.py --share  # link công khai (Colab / RunPod)
+```
+
+Cột trái: tab **Phòng** (ảnh phòng, kích thước, nút *Đo phòng từ ảnh* — cần GPU + MoGe-2), **Vật liệu** (ảnh 1 viên/thanh +
+kích thước, lát sàn hoặc tường), **Bàn**, **Ghế** (ảnh, kích thước, số ghế, file `.glb` từ TRELLIS.2). Nút **Dựng 3D** →
+khung phải hiện cảnh bằng **three.js** (viewer nhúng trong trang). Tab **2D (AI)** dành cho ghép ảnh bằng
+Qwen-Image-Edit — chưa nối (cần GPU, Phase 0). Logic ở `core/design.py`, `core/room/moge.py`; `app/gradio_app.py` chỉ nối giao diện.
+
 ## Web (three.js) — chạy ngay trên laptop
 
 ```powershell
@@ -50,7 +63,8 @@ core/            Python thuần (numpy, trimesh)
   scene3d.py     spec → scene.glb + meta (vật liệu sàn/tường)
   comfy_client.py, joblog.py, io.py, config.py
 comfy_nodes/     node ComfyUI: Chuẩn hoá 3D, Dựng cảnh 3D
-web/             web app three.js (giao diện chính)
+app/             giao diện Gradio (chính)
+web/             bản web thuần three.js (chỉnh tay, kéo thả)
 viewer/          xem nhanh scene.glb do pipeline Python xuất ra
 workflows/       hướng dẫn workflow A/B/C trong ComfyUI
 infra/, bench/   cài đặt pod, benchmark Phase 0

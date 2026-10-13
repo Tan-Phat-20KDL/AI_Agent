@@ -1,0 +1,4 @@
+# Giao diện Gradio (python app/gradio_app.py). Core chỉ cần numpy + trimesh (xem pyproject.toml).
+numpy>=1.24
+trimesh>=4.0
+gradio>=6.0

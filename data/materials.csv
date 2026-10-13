@@ -1,6 +1,0 @@
-material_id,name,group,unit,unit_price_vnd,pbr_texture_dir
-MDF_BLACK,MDF phủ melamine đen,mdf,m2,420000,textures/mdf_black
-MDF_WHITE,MDF phủ melamine trắng,mdf,m2,400000,textures/mdf_white
-WAL_OIL,Gỗ óc chó lau dầu,go,m3,65000000,textures/walnut
-OAK_STAIN,Gỗ sồi sơn màu,go,m3,38000000,textures/oak
-FABRIC_GREY,Vải bố xám,vai,m,180000,textures/fabric_grey

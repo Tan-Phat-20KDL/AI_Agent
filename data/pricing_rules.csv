@@ -1,5 +1,0 @@
-key,value,note
-vat_pct,10,Thuế VAT % (số minh hoạ - kế toán chốt)
-discount_pct,0,Chiết khấu % trên tổng hàng
-delivery_fee_vnd,500000,Phí vận chuyển cố định / đơn
-install_pct,0,Phí lắp đặt % trên tổng hàng sau chiết khấu

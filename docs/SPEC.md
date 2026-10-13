@@ -3,6 +3,9 @@
 Tra cứu 09/10/2026. Bản này là chuẩn cho cả công ty; quyết định triển khai demo nằm trong [SRS](SRS.md).
 Mọi license/VRAM/giá dưới đây lấy từ trang nguồn đã mở (link kèm). Số **chưa đo** được ghi rõ là ước tính.
 
+**Thu hẹp 13/10/2026:** phạm vi hiện tại chỉ là ghép 1 bàn + 4 ghế / lát vật liệu từ 1–3 ảnh, ra ảnh 2D + cảnh 3D —
+xem [SRS 0.3](SRS.md). Các phần CSV/báo giá/LLM/sửa nhiều lượt dưới đây là tham chiếu cho giai đoạn sau.
+
 **Đã chốt (11/10/2026):** database = CSV; ưu tiên sản phẩm có sẵn; demo trên RunPod L40S Community;
 bộ model rút gọn cho P1 (không Qwen-Image, không LLM).
 

@@ -2,12 +2,12 @@
 #   name <TAB> url_tải_file <TAB> đích (tương đối trong ComfyUI/models) <TAB> sha256 (để trống nếu chưa có) <TAB> license
 # Điền URL file cụ thể + sha256 sau khi chọn đúng file ở Phase 0; download_models.sh bỏ qua dòng bắt đầu bằng '#'.
 #
-# Bộ model RÚT GỌN cho demo P1 (sản phẩm có sẵn) — trang gốc để chọn file:
+# Bộ model cho phạm vi hiện tại (ghép 2D + 3D) — trang gốc để chọn file:
 #   TRELLIS.2-4B        https://github.com/microsoft/TRELLIS.2                 MIT
 #   BiRefNet            https://github.com/ZhengPeng7/BiRefNet                 MIT
 #   MoGe-2 vitl-normal  https://github.com/microsoft/MoGe                      MIT
 #   SAM 3               https://github.com/facebookresearch/sam3               SAM License
-#   Qwen-Image-Edit-2511 (FP8, xoá đồ cũ - FR-07, tuỳ chọn)
+#   Qwen-Image-Edit-2511 (FP8, ghép bàn ghế + lát vật liệu 2D — BẮT BUỘC)
 #                       https://huggingface.co/Qwen/Qwen-Image-Edit-2511       Apache-2.0
 #                       file ComfyUI: https://docs.comfy.org/tutorials/image/qwen/qwen-image-edit
 # KHÔNG dùng (license không cho thương mại): FLUX.1 dev/Kontext dev, Qwen-Image-2.1, Apple SHARP,

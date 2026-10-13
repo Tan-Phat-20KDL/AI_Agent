@@ -1,77 +1,54 @@
-# furniture-ai — Core AI đặt sản phẩm nội thất vào phòng 3D + báo giá
+# AI_Agent — ghép bàn ghế / vật liệu vào ảnh phòng (2D + xem 3D)
 
-Core của hệ thống AI Agent: lấy **sản phẩm có sẵn** (ảnh 2D → 3D, hoặc file 3D có sẵn), đặt vào
-**phòng dựng từ ảnh của khách**, xuất **cảnh 3D xem bằng three.js** kèm **báo giá tự động** từ CSV.
-Sửa cục bộ (vd chỉ đổi ghế) không làm đổi phần còn lại của cảnh. ComfyUI là giao diện vận hành.
+Đầu vào **1–3 ảnh**: ảnh phòng + ảnh bàn + ảnh ghế (hoặc ảnh gạch/thanh gỗ).
+Đầu ra: **ảnh 2D** căn phòng đã ghép 1 bàn + 4 ghế / đã lát vật liệu, và **cảnh 3D** xem bằng three.js.
+ComfyUI là giao diện vận hành; model chạy trên RunPod RTX A6000.
 
-Tài liệu: [SRS](docs/SRS.md) · [SPEC kỹ thuật](docs/SPEC.md) · [Cài demo trên RunPod](docs/runpod-setup.md) ·
-[AWS cho bản production](docs/aws-setup.md)
+Tài liệu: [SRS](docs/SRS.md) · [SPEC (nghiên cứu model, license, giá)](docs/SPEC.md) ·
+[Cài trên RunPod](docs/runpod-setup.md) · [Workflow](workflows/README.md) · [Quy ước code](CONTRIBUTING.md)
 
 ## Trạng thái
 
-| Phần | Trạng thái | Chạy ở đâu |
-| --- | --- | --- |
-| CSV làm database + kiểm lỗi theo dòng/cột (FR-01, FR-04) | Xong, có test | Laptop |
-| Scene graph + JSON Patch + chặn sửa vượt phạm vi + version/undo (FR-11, FR-12) | Xong, có test | Laptop |
-| Đặt đồ tự động: giữa phòng, sát tường, ghế quanh bàn; không va chạm (FR-09) | Xong, có test | Laptop |
-| Báo giá từ CSV, xuất JSON + CSV cho Excel (FR-13) | Xong, có test | Laptop |
-| Chuẩn hoá asset GLB theo kích thước CSV, tô màu biến thể (FR-02/03/05) | Xong, có test | Laptop |
-| Ước lượng hộp phòng từ point map MoGe-2 (FR-06) | Xong phần hình học, test bằng dữ liệu giả lập | Laptop |
-| Xuất `scene.glb` + viewer three.js, chụp PNG (FR-10, FR-14) | Xong | Laptop |
-| Custom node ComfyUI (W1, W2, W3, undo, đăng ký asset) | Xong, test không cần ComfyUI | Laptop / GPU |
-| Workflow GPU: ảnh SKU → TRELLIS.2 (I1), ảnh phòng → MoGe-2 + SAM 3 | **Chưa** — dựng trong UI ở Phase 0 | GPU |
-| Benchmark Phase 0, script cài đặt + tự dừng pod | Viết sẵn, **chưa chạy** trên GPU | GPU |
+| Phần | Trạng thái |
+| --- | --- |
+| Ghép 2D (Qwen-Image-Edit-2511) và lát vật liệu 2D (SAM 3 + Qwen-Image-Edit) | Phase 0 — dựng workflow trên pod |
+| Ảnh bàn/ghế → 3D (TRELLIS.2) | Phase 0 |
+| Chuẩn hoá GLB đúng kích thước, đặt 4 ghế quanh bàn, lát vật liệu 3D, viewer | ✔ có test, chạy trên laptop |
+| Ước lượng kích thước phòng từ point map MoGe-2 | ✔ phần hình học; nối model ở Phase 0 |
+| Script cài/tự dừng pod, benchmark | Viết sẵn, chạy thử ở Phase 0 |
 
 ## Chạy thử trên laptop (không cần GPU)
 
-Chỉ cần Python ≥ 3.10 và 3 thư viện nhẹ (numpy, trimesh, pytest).
-
 ```powershell
 py -3.12 -m venv .venv
-.\.venv\Scripts\python -m pip install -e ".[dev]"
-.\.venv\Scripts\python -m pytest -q                 # 37 test
-.\.venv\Scripts\python tools\demo_local.py          # W1 → W2 → báo giá, đồ 3D là khối tạm
+.\.venv\Scripts\python -m pip install numpy trimesh pytest
+.\.venv\Scripts\python -m pytest -q
+.\.venv\Scripts\python tools\demo_local.py
 .\.venv\Scripts\python -m http.server 8080
-# mở http://localhost:8080/viewer/?scene=runtime/out/s_demo/v2/scene.glb
+# mở http://localhost:8080/viewer/?scene=runtime/out/demo/scene.glb
 ```
-
-`demo_local.py` tạo bàn đen + 4 ghế nâu + sofa, rồi **chỉ đổi ghế sang xanh**: bàn, sofa, số ghế và
-vị trí giữ nguyên; thử sửa lén cả bàn thì bị chặn. Đồ 3D trong demo là khối hộp đúng kích thước
-CSV — trên GPU sẽ thay bằng mesh TRELLIS.2.
 
 ## Cấu trúc
 
 ```text
-core/            Python thuần, không import ComfyUI
-  repository/    đọc/ghi CSV (sau đổi PostgreSQL chỉ sửa ở đây)
-  scene/         scene graph, JSON Patch, scope validator, store version, assemble scene.glb
-  placement/     đặt đồ lên sàn, kiểm va chạm
-  room/          hộp phòng từ point map MoGe-2
-  assets/        chuẩn hoá GLB, tô màu
-  quote/         báo giá
-  comfy_client.py, joblog.py   gọi ComfyUI có timeout; log job + VRAM đỉnh
-comfy_nodes/     custom node ComfyUI (lớp vỏ gọi core/)
-workflows/api/   workflow ComfyUI dạng API JSON
-viewer/          three.js viewer
-data/            CSV mẫu (giá minh hoạ)
-infra/           runpod/ (demo), aws/ (production), models.lock, download_models.sh
-bench/           benchmark Phase 0 (chạy trên GPU)
+core/            Python thuần (numpy, trimesh)
+  assets/        chuẩn hoá GLB về kích thước thật
+  placement/     đặt bàn giữa phòng, ghế quanh bàn, kiểm va chạm
+  room/          hộp phòng, ước lượng từ point map MoGe-2
+  scene3d.py     spec → scene.glb + meta (vật liệu sàn/tường)
+  comfy_client.py, joblog.py, io.py, config.py
+comfy_nodes/     node ComfyUI: Chuẩn hoá 3D, Dựng cảnh 3D
+viewer/          three.js
+workflows/       hướng dẫn workflow A/B/C trong ComfyUI
+infra/, bench/   cài đặt pod, benchmark Phase 0
 tools/           demo_local.py
-tests/           pytest
-docs/            SRS, SPEC, hướng dẫn RunPod/AWS
 ```
 
 ## Nhánh git
 
-Repo: https://github.com/Tan-Phat-20KDL/AI_Agent (private)
-
 | Nhánh | Dùng cho |
 | --- | --- |
 | `develop` | Code hằng ngày |
-| `staging` | Bản chốt để test trên GPU và demo — gộp từ `develop` qua Pull Request |
-| `main` | Bản ổn định / production — gộp từ `staging` qua Pull Request |
-
-Không commit thẳng vào `main`/`staging`.
-
-`.gitignore` đã loại `.venv/`, `runtime/`, `assets/`, model và ảnh phòng khách; `.gitattributes`
-giữ xuống dòng LF cho file `.sh` để chạy được trên Linux.
+| `staging` | Bản chốt để demo — gộp từ `develop` qua Pull Request |
+| `main` | Bản ổn định — gộp từ `staging` qua Pull Request |
+| `archive/full-scope` | Bản phạm vi đầy đủ cũ (CSV, báo giá, version/sửa cục bộ) — cất để dùng lại |

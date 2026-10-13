@@ -24,8 +24,8 @@ kiểm lại trong console trước khi nạp tiền.
 0.07 USD/GB, nhưng **network volume chỉ dùng được với Secure Cloud** ([docs](https://docs.runpod.io/pods/storage/create-network-volumes)).
 Với Community, ổ `/workspace` là volume disk gắn với máy đó, giá 0.20 USD/GB-tháng khi dừng.
 
-80 GB đủ cho bộ model rút gọn (~35–45 GB: TRELLIS.2, BiRefNet, MoGe-2, SAM 3, tuỳ chọn
-Qwen-Image-Edit FP8) + ComfyUI + venv. Số này là ước tính, đo lại ở Phase 0.
+80 GB đủ cho bộ model (~40–50 GB ước tính: Qwen-Image-Edit-2511 FP8 ~20 GB + text encoder ~8 GB,
+TRELLIS.2, BiRefNet, SAM 3, MoGe-2) + ComfyUI + venv. Đo lại ở Phase 0.
 
 ## Rủi ro riêng của Community — đọc trước khi chọn
 

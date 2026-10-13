@@ -1,4 +1,6 @@
-"""Đặt đồ tự động lên sàn (FR-09).
+"""Đặt đồ tự động lên sàn: bàn giữa phòng, ghế xếp quanh bàn, không chồng, không xuyên tường.
+
+Mỗi object mang sẵn kích thước: "dims_mm": [rộng x, sâu z, cao y].
 
 Nguyên tắc giữ context: chỉ thêm vị trí cho instance CÒN THIẾU (len(instances) < qty);
 instance đã có vị trí không bao giờ bị dời. Va chạm kiểm tra bằng hình chữ nhật
@@ -13,13 +15,11 @@ Chiến lược theo trường "placement" của object:
 
 from __future__ import annotations
 
+import copy
 import math
 from dataclasses import dataclass
 
-from core.repository import Catalog
-
 from .._util import snap_rotation
-from ..scene.model import clone
 
 
 class PlacementError(RuntimeError):
@@ -64,18 +64,18 @@ def footprint(width_mm: float, depth_mm: float, rotation_deg: float) -> tuple[fl
     return (depth_mm, width_mm) if r in (90, 270) else (width_mm, depth_mm)
 
 
-def _dims(catalog: Catalog, obj: dict) -> tuple[int, int]:
-    if obj.get("custom"):
-        dm = obj.get("dims_mm") or [0, 0, 0]
-        return int(dm[0]), int(dm[1])
-    p = catalog.product_of(obj["variant_id"])
-    return p.width_mm, p.depth_mm
+def _dims(obj: dict) -> tuple[int, int]:
+    try:
+        w, d = obj["dims_mm"][:2]
+    except (KeyError, TypeError, ValueError):
+        raise PlacementError(f"object '{obj.get('id')}' thiếu dims_mm [rộng, sâu, cao]") from None
+    return int(w), int(d)
 
 
-def instance_rects(scene: dict, catalog: Catalog) -> list[tuple[str, int, Rect]]:
+def instance_rects(scene: dict) -> list[tuple[str, int, Rect]]:
     out = []
     for o in scene.get("objects", []):
-        w, d = _dims(catalog, o)
+        w, d = _dims(o)
         for i, it in enumerate(o.get("instances", [])):
             fw, fd = footprint(w, d, it.get("rotation_deg", 0))
             x, z = it["position_mm"]
@@ -83,10 +83,10 @@ def instance_rects(scene: dict, catalog: Catalog) -> list[tuple[str, int, Rect]]
     return out
 
 
-def find_collisions(scene: dict, catalog: Catalog, gap_mm: float = 50) -> set[str]:
+def find_collisions(scene: dict, gap_mm: float = 50) -> set[str]:
     """Id các object đang chồng nhau hoặc lòi ra ngoài phòng (dùng sau W2 đổi biến thể khác kích thước)."""
     W, D = scene["room"]["width_mm"], scene["room"]["depth_mm"]
-    rects = instance_rects(scene, catalog)
+    rects = instance_rects(scene)
     bad: set[str] = set()
     for i, (oid, _, r) in enumerate(rects):
         if not r.inside(W, D):
@@ -197,19 +197,19 @@ def _around_slots(target: Rect, cw: float, cd: float, qty: int, gap: float):
     return preferred + fallback
 
 
-def place_missing(scene: dict, catalog: Catalog, gap_mm: float = 50, wall_gap_mm: float = 20,
+def place_missing(scene: dict, gap_mm: float = 50, wall_gap_mm: float = 20,
                   step_mm: float = 50, reset_ids: set[str] | frozenset[str] = frozenset()) -> dict:
     """Trả về scene MỚI đã có đủ vị trí cho mọi instance; không sửa scene đầu vào.
 
     reset_ids: object được phép xếp lại TOÀN BỘ (vd người dùng đổi số ghế 4 → 6 thì 4 ghế cũ
     phải giãn ra). Chỉ truyền id nằm trong phạm vi sửa; object khác luôn giữ nguyên vị trí.
     """
-    s = clone(scene)
+    s = copy.deepcopy(scene)
     for o in s["objects"]:
         if o["id"] in reset_ids:
             o["instances"] = []
     room_w, room_d = s["room"]["width_mm"], s["room"]["depth_mm"]
-    occupied: list[Rect] = [r for _, _, r in instance_rects(s, catalog)]
+    occupied: list[Rect] = [r for _, _, r in instance_rects(s)]
     by_id = {o["id"]: o for o in s["objects"]}
 
     def fits(r: Rect) -> bool:
@@ -220,14 +220,14 @@ def place_missing(scene: dict, catalog: Catalog, gap_mm: float = 50, wall_gap_mm
         need = obj["qty"] - len(inst)
         if need <= 0:
             continue
-        w, d = _dims(catalog, obj)
+        w, d = _dims(obj)
         mode = obj.get("placement", "center")
 
         if mode.startswith("around:"):
             tgt = by_id[mode.split(":", 1)[1]]
             if not tgt.get("instances"):
                 raise PlacementError(f"'{obj['id']}' xếp quanh '{tgt['id']}' nhưng '{tgt['id']}' chưa có vị trí")
-            tw, td = _dims(catalog, tgt)
+            tw, td = _dims(tgt)
             t0 = tgt["instances"][0]
             fw, fd = footprint(tw, td, t0.get("rotation_deg", 0))
             target = Rect(t0["position_mm"][0], t0["position_mm"][1], fw, fd)

@@ -11,7 +11,6 @@ export ra API JSON gọi từ script/web sau này.
 from __future__ import annotations
 
 import json
-import os
 import sys
 from pathlib import Path
 
@@ -19,25 +18,17 @@ REPO = Path(__file__).resolve().parents[1]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
+from core.config import data_dir as _data_dir  # noqa: E402
+from core.config import root as _root  # noqa: E402
+from core.config import runtime_dir as _runtime  # noqa: E402
 from core.placement import place_missing  # noqa: E402
 from core.quote import compute_quote, save_quote  # noqa: E402
 from core.repository import load_catalog, set_variant_asset  # noqa: E402
 from core.scene import EditScope, SceneStore, new_scene  # noqa: E402
 from core.scene.assemble import assemble_scene  # noqa: E402
+from core.workflows import plan_edit  # noqa: E402
 
 CATEGORY = "furniture-ai"
-
-
-def _root() -> Path:
-    return Path(os.environ.get("FA_ROOT", REPO))
-
-
-def _data_dir() -> Path:
-    return Path(os.environ.get("FA_DATA", _root() / "data"))
-
-
-def _runtime() -> Path:
-    return Path(os.environ.get("FA_RUNTIME", _root() / "runtime"))
 
 
 def _store():
@@ -118,15 +109,9 @@ class FA_EditScene:
         cat, store = _store()
         scope = EditScope.of(*[t.strip() for t in targets.split(",") if t.strip()],
                              allow_qty=allow_qty, allow_add=allow_add_remove, allow_remove=allow_add_remove)
-        before = store.load(scene_id, base_version)
-        s = store.commit(scene_id, base_version, json.loads(patch_json), scope, note=note or "W2 sửa")
-        # Món đổi số lượng → xếp lại riêng món đó (vd 4 → 6 ghế phải giãn ra); món khác không động tới
-        old_qty = {o["id"]: o["qty"] for o in before["objects"]}
-        reset = {o["id"] for o in s["objects"]
-                 if o["id"] in scope.targets and old_qty.get(o["id"]) not in (None, o["qty"])}
-        placed = place_missing(s, cat, reset_ids=reset)
-        if placed != s:
-            s = store.commit_scene(scene_id, s["version"], placed, scope, note="đặt thêm vị trí")
+        s = store.commit_scene(scene_id, base_version,
+                               plan_edit(store.load(scene_id, base_version), json.loads(patch_json), scope, cat),
+                               scope, note=note or "W2 sửa")
         return (scene_id, s["version"])
 
 

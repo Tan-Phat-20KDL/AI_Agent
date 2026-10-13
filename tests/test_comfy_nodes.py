@@ -83,6 +83,28 @@ def test_color_change_keeps_chair_positions(fa_env):
     assert s["objects"][1]["instances"] == v1["objects"][1]["instances"]
 
 
+def test_bigger_variant_is_replaced_not_overlapping(fa_env):
+    """Đổi ghế sang mẫu to hơn: ghế phải được xếp lại để không đè bàn; bàn và sofa giữ nguyên."""
+    from core.placement import find_collisions
+    from core.repository import load_catalog
+
+    root, nodes = fa_env
+    data = root / "data"
+    with (data / "products.csv").open("a", encoding="utf-8") as fh:
+        fh.write("CH02,Ghế bành Lounge,ghe_an,hien_dai,700,700,800,\n")
+    with (data / "variants.csv").open("a", encoding="utf-8") as fh:
+        fh.write("CH02-RED,CH02,Đỏ,,3900000,,assets/CH01/BRN.glb,approved,#AA3333\n")
+    _run_api(nodes, json.loads((ROOT / "workflows/api/w1_form.json").read_text(encoding="utf-8")))
+    _, ver = nodes.FA_EditScene().run("s_001", 1, "chair_1",
+                                      '[{"op": "replace", "path": "/objects/1/variant_id", "value": "CH02-RED"}]',
+                                      False, False, "")
+    s = json.loads((root / f"runtime/scenes/s_001/v{ver}.json").read_text(encoding="utf-8"))
+    v1 = json.loads((root / "runtime/scenes/s_001/v1.json").read_text(encoding="utf-8"))
+    assert ver == 2                                   # đúng 1 version mới, không có version dở dang
+    assert not find_collisions(s, load_catalog(data))
+    assert s["objects"][0] == v1["objects"][0] and s["objects"][2] == v1["objects"][2]
+
+
 def test_register_asset_sets_pending(fa_env, tmp_path):
     import trimesh
 

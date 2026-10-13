@@ -1,4 +1,10 @@
-# Demo trên RunPod L40S (Community Cloud)
+# Demo trên RunPod (Community Cloud)
+
+**Chốt 11/10/2026: dùng RTX A6000 48 GB** (thay L40S) cho giai đoạn cài đặt + Phase 0.
+Lý do: rẻ hơn L40S 25–60% (0,33–0,59 USD/h theo dữ liệu trang giá), cùng 48 GB VRAM nên TRELLIS.2 (≥ 24 GB)
+không lo tràn; đổi lại chậm hơn (Ampere, không tính FP8 trực tiếp) và RAM máy 50 GB — đủ cho bộ model rút gọn.
+1–3 h/ngày ≈ 10–53 USD/tháng tiền GPU + ≤ 18 USD lưu trữ. Chuyển L40S/A100 chỉ khi Phase 0 đo thấy cần.
+Các bảng L40S bên dưới giữ làm tham chiếu.
 
 Demo/dev chạy trên **1 pod RunPod L40S 48 GB, gói Community, bật khi cần**, khoảng 1–3 giờ/ngày.
 Bản production cho cả công ty vẫn theo [aws-setup.md](aws-setup.md). Giá tra ngày 09/10/2026 từ

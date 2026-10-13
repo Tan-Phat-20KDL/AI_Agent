@@ -83,6 +83,20 @@ def instance_rects(scene: dict, catalog: Catalog) -> list[tuple[str, int, Rect]]
     return out
 
 
+def find_collisions(scene: dict, catalog: Catalog, gap_mm: float = 50) -> set[str]:
+    """Id các object đang chồng nhau hoặc lòi ra ngoài phòng (dùng sau W2 đổi biến thể khác kích thước)."""
+    W, D = scene["room"]["width_mm"], scene["room"]["depth_mm"]
+    rects = instance_rects(scene, catalog)
+    bad: set[str] = set()
+    for i, (oid, _, r) in enumerate(rects):
+        if not r.inside(W, D):
+            bad.add(oid)
+        for oid2, _, r2 in rects[i + 1:]:
+            if r.overlaps(r2, gap_mm - 1):  # -1: dung sai làm tròn mm
+                bad.update((oid, oid2))
+    return bad
+
+
 def _order(objects: list[dict]) -> list[dict]:
     """Object 'around:X' phải đặt sau X."""
     placed: list[dict] = []

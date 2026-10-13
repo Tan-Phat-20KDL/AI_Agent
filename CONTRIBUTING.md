@@ -10,6 +10,7 @@ core/<miền>/      logic thuần: nhận dữ liệu → trả dữ liệu. Kh�
 core/scene3d.py   ghép các miền thành use-case (spec → cảnh 3D).
 core/config.py    MỌI đường dẫn / biến môi trường — chỉ đọc cấu hình ở đây.
 comfy_nodes/      lớp vỏ mỏng: đọc input node → gọi core → trả output. Không có if/else nghiệp vụ.
+web/js/           web three.js: stage (cảnh), furniture, layout (thuần, không đụng DOM), main (form).
 tools/, bench/    script chạy tay. infra/: cài đặt máy.
 ```
 

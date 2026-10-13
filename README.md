@@ -17,6 +17,18 @@ Tài liệu: [SRS](docs/SRS.md) · [SPEC (nghiên cứu model, license, giá)](d
 | Ước lượng kích thước phòng từ point map MoGe-2 | ✔ phần hình học; nối model ở Phase 0 |
 | Script cài/tự dừng pod, benchmark | Viết sẵn, chạy thử ở Phase 0 |
 
+## Web (three.js) — chạy ngay trên laptop
+
+```powershell
+.\.venv\Scripts\python tools\serve.py
+# mở http://localhost:8765/web/
+```
+
+Nhập kích thước phòng/bàn/ghế, tải ảnh gạch–thanh gỗ để lát sàn (đúng kích thước 1 viên), ảnh phòng thật dán lên tường
+sau, ảnh sản phẩm để lấy màu, hoặc file `.glb` (từ TRELLIS.2) để thay khối mẫu. Bàn tự đặt giữa phòng, ghế xếp quanh;
+kéo thả để di chuyển, phím R / nút ⟳ để xoay 90°. *Xuất cấu hình* ra JSON cùng dạng spec với `core/scene3d.py`.
+Code: `web/js/` — `stage.js` (cảnh + phòng), `furniture.js` (bàn/ghế), `layout.js` (xếp đồ), `textures.js`, `main.js` (form).
+
 ## Chạy thử trên laptop (không cần GPU)
 
 ```powershell
@@ -38,7 +50,8 @@ core/            Python thuần (numpy, trimesh)
   scene3d.py     spec → scene.glb + meta (vật liệu sàn/tường)
   comfy_client.py, joblog.py, io.py, config.py
 comfy_nodes/     node ComfyUI: Chuẩn hoá 3D, Dựng cảnh 3D
-viewer/          three.js
+web/             web app three.js (giao diện chính)
+viewer/          xem nhanh scene.glb do pipeline Python xuất ra
 workflows/       hướng dẫn workflow A/B/C trong ComfyUI
 infra/, bench/   cài đặt pod, benchmark Phase 0
 notebooks/       Colab T4: test miễn phí trước khi thuê GPU

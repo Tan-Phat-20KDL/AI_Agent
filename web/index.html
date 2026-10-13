@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thiết kế phòng 3D</title>
+  <link rel="stylesheet" href="./styles.css">
+  <!-- three.js 0.160.0 lưu sẵn trong repo (MIT) → không phụ thuộc CDN -->
+  <script type="importmap">
+    { "imports": {
+        "three": "../viewer/vendor/three/three.module.min.js",
+        "three/addons/": "../viewer/vendor/three/addons/"
+    } }
+  </script>
+  <script>
+    addEventListener('error', (e) => {
+      const s = document.getElementById('status');
+      if (s) { s.textContent = 'Lỗi: ' + (e.message || ('không tải được ' + (e.target && e.target.src))); s.className = 'status err'; }
+    }, true);
+  </script>
+</head>
+<body>
+  <aside id="panel">
+    <h1>Thiết kế phòng 3D</h1>
+
+    <section>
+      <h2>Phòng <small>(mm)</small></h2>
+      <div class="row3">
+        <label>Rộng<input id="room-w" type="number" value="4200" min="1500" step="100"></label>
+        <label>Sâu<input id="room-d" type="number" value="3600" min="1500" step="100"></label>
+        <label>Cao<input id="room-h" type="number" value="2800" min="2000" step="100"></label>
+      </div>
+      <label class="file">Ảnh phòng thật (dán lên tường sau)<input id="room-photo" type="file" accept="image/*"></label>
+      <label class="inline">Màu tường<input id="wall-color" type="color" value="#e9e6e0"></label>
+    </section>
+
+    <section>
+      <h2>Sàn: gạch / thanh gỗ</h2>
+      <label class="file">Ảnh 1 viên / 1 thanh<input id="floor-img" type="file" accept="image/*"></label>
+      <div class="row2">
+        <label>Dài (mm)<input id="tile-w" type="number" value="1200" min="50" step="10"></label>
+        <label>Rộng (mm)<input id="tile-l" type="number" value="200" min="50" step="10"></label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Bàn</h2>
+      <div class="row3">
+        <label>Dài<input id="table-w" type="number" value="1600" min="300" step="10"></label>
+        <label>Rộng<input id="table-d" type="number" value="900" min="300" step="10"></label>
+        <label>Cao<input id="table-h" type="number" value="750" min="300" step="10"></label>
+      </div>
+      <label class="inline">Màu<input id="table-color" type="color" value="#2e2e30"></label>
+      <label class="file">Ảnh sản phẩm (lấy màu)<input id="table-img" type="file" accept="image/*"></label>
+      <label class="file">File 3D .glb (thay khối mẫu)<input id="table-glb" type="file" accept=".glb"></label>
+    </section>
+
+    <section>
+      <h2>Ghế</h2>
+      <div class="row3">
+        <label>Rộng<input id="chair-w" type="number" value="450" min="200" step="10"></label>
+        <label>Sâu<input id="chair-d" type="number" value="520" min="200" step="10"></label>
+        <label>Cao<input id="chair-h" type="number" value="820" min="300" step="10"></label>
+      </div>
+      <div class="row2">
+        <label>Số ghế<input id="chair-n" type="number" value="4" min="0" max="12"></label>
+        <label class="inline">Màu<input id="chair-color" type="color" value="#7a5232"></label>
+      </div>
+      <label class="file">Ảnh sản phẩm (lấy màu)<input id="chair-img" type="file" accept="image/*"></label>
+      <label class="file">File 3D .glb (thay khối mẫu)<input id="chair-glb" type="file" accept=".glb"></label>
+    </section>
+
+    <section class="actions">
+      <button id="btn-layout">Xếp lại tự động</button>
+      <button id="btn-shot">Chụp ảnh PNG</button>
+      <button id="btn-json">Xuất cấu hình</button>
+      <button id="btn-view">Góc nhìn ban đầu</button>
+    </section>
+  </aside>
+
+  <main id="view">
+    <div id="hud">
+      <div id="status" class="status">Đang tải…</div>
+      <div id="sel" class="sel" hidden>
+        <span id="sel-name"></span>
+        <button id="btn-rot" title="Xoay 90°">⟳ 90°</button>
+      </div>
+    </div>
+    <p class="hint">Kéo chuột: xoay · Cuộn: zoom · Kéo bàn/ghế để di chuyển</p>
+  </main>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
